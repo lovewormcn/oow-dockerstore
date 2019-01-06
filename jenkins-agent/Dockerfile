@@ -106,5 +106,3 @@ RUN set -ex \
 && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz
 
 RUN 	chown --recursive jenkins:jenkins /home/jenkins 
-
-USER jenkins
