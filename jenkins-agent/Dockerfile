@@ -8,7 +8,7 @@ RUN apt-get update &&\
     apt-get install -y libltdl7
 #Install MAVEN----------------------------------------------------------------------------
 ARG MAVEN_VERSION=3.6.0
-ARG USER_HOME_DIR="/root"
+ARG USER_HOME_DIR="/home/jenkins"
 ARG SHA=fae9c12b570c3ba18116a4e26ea524b29f7279c17cbaadc3326ca72927368924d9131d11b9e851b8dc9162228b6fdea955446be41207a5cfc61283dd8a561d2f
 ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
 
@@ -39,14 +39,11 @@ RUN set -o errexit -o nounset \
 	&& mv "gradle-${GRADLE_VERSION}" "${GRADLE_HOME}/" \
 	&& ln --symbolic "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle \
 	\
-	&& echo "Adding gradle user and group" \
-	&& groupadd --system --gid 1000 gradle \
-	&& useradd --system --gid gradle --uid 1000 --shell /bin/bash --create-home gradle \
-	&& mkdir /home/gradle/.gradle \
-	&& chown --recursive gradle:gradle /home/gradle \
+	&& echo "CHANGING GRADLE USER TO JENKINS" \
+	&& mkdir /home/jenkins/.gradle \
 	\
 	&& echo "Symlinking root Gradle cache to gradle Gradle cache" \
-	&& ln -s /home/gradle/.gradle /root/.gradle
+	&& ln -s /home/jenkins/.gradle /root/.gradle
 	
 ENV PATH="${GRADLE_HOME}/bin:${PATH}"
 #INSTALLNODEJS------------------------------------------------------------------------
@@ -107,3 +104,7 @@ RUN set -ex \
   && ln -s /opt/yarn-v$YARN_VERSION/bin/yarn /usr/local/bin/yarn \
   && ln -s /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
 && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz
+
+RUN 	chown --recursive jenkins:jenkins /home/jenkins \
+
+USER jenkins
