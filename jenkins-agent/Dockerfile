@@ -106,6 +106,8 @@ RUN set -ex \
 && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz
 
 #restore to user jenkins
-RUN mkdir "${MAVEN_CONFIG}" 
-RUN chown --recursive jenkins:jenkins /home/jenkins 
+RUN mkdir "${MAVEN_CONFIG}"  && \
+    npm install npm@latest -g && \
+    chown --recursive jenkins:jenkins /home/jenkins && \
+    chmod --recursive 777 /usr/local/lib/node_modules
 USER jenkins
